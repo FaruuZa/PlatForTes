@@ -23,7 +23,7 @@ public class Playing extends State implements StateMethods {
 
     private void initClasses() {
         lmanager = new LevelManager(game);
-        player = new Player(80, 100);
+        player = new Player(80, Game.GAME_HEIGHT-Game.TILES_SIZE*2);
         player.loadLvlData(lmanager.getCurrentLevel());
         pauseOverlay = new PauseOverlay(this);
     }

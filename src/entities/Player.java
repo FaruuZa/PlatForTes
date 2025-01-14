@@ -31,15 +31,15 @@ public class Player extends Entity {
 
     // jump / gravity
     private float airSpeed = 0f;
-    private float gravity = 0.05f * Game.SCALE;
-    private float jumpSpeed = -3.0f * Game.SCALE;
+    private float gravity = 0.06f * Game.SCALE;
+    private float jumpSpeed = -2.8f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     private boolean inAir = true;
 
     public Player(float x, float y) {
-        super(x, y, (int) (82 * Game.SCALE), (int) (72 * Game.SCALE));
+        super(x, y, (int) (64* Game.SCALE), (int) (58 * Game.SCALE));
         loadAllAnimations(); // Load all animations at once
-        initHitbox(x, y, 30 * Game.SCALE, 45 * Game.SCALE); // Further reduce hitbox height
+        initHitbox(x, y, (int) (24 * Game.SCALE), (int) (31 * Game.SCALE)); // Further reduce hitbox height
     }
 
     private void loadAllAnimations() {
@@ -71,20 +71,20 @@ public class Player extends Entity {
 
     public void render(Graphics g) {
         // update();
-        if (animations != null) {
+        if (animations != null) { 
             BufferedImage currentAnimation = animations[aniIndex];
             if (mkiri) {
                 currentAnimation = flipImageHorizontally(currentAnimation); // Flip the image if facing left
             }
             g.drawImage(currentAnimation, (int) (hitbox.x - xDrawOffset),
-                    (int) (hitbox.y - yDrawOffset) - (playerAction == ATTACK ? 1 : 0),
+                    (int) (hitbox.y - yDrawOffset),
                     width + (playerAction == ATTACK ? (this.width / 5) : 0), height + (playerAction == ATTACK ? 1 : 0),
                     null);
         } else {
             System.out.println("Animations not loaded.");
             System.out.println(playerAction);
         }
-        drawHitbox(g);
+        // drawHitbox(g);
     }
 
     private void updateAnimationTick() {
