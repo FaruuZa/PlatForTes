@@ -11,6 +11,7 @@ import static utilz.HelpMethods.*;
 import java.util.HashMap; // Import HashMap
 import java.util.Map; // Import Map
 
+import gamestates.Playing;
 import levels.LevelOne;
 import main.Game;
 
@@ -35,11 +36,15 @@ public class Player extends Entity {
     private float jumpSpeed = -2.8f * Game.SCALE;
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     private boolean inAir = true;
+    // a
+    private boolean enable = true;
+    private Clone clone;
 
     public Player(float x, float y) {
-        super(x, y, (int) (64* Game.SCALE), (int) (58 * Game.SCALE));
+        super(x, y, (int) (64 * Game.SCALE), (int) (58 * Game.SCALE));
         loadAllAnimations(); // Load all animations at once
         initHitbox(x, y, (int) (24 * Game.SCALE), (int) (31 * Game.SCALE)); // Further reduce hitbox height
+        clone = new Clone(x, y, this);
     }
 
     private void loadAllAnimations() {
@@ -71,16 +76,21 @@ public class Player extends Entity {
 
     public void render(Graphics g) {
         // update();
-        if (animations != null) { 
+        if (animations != null) {
             BufferedImage currentAnimation = animations[aniIndex];
             if (mkiri) {
                 currentAnimation = flipImageHorizontally(currentAnimation); // Flip the image if facing left
             }
             g.drawImage(currentAnimation, (int) (hitbox.x - xDrawOffset),
                     (int) (hitbox.y - yDrawOffset),
-                    width + (playerAction == ATTACK ? (this.width / 5) : 0), height + (playerAction == ATTACK ? 1 : 0),
+                    width + (playerAction == ATTACK ? (this.width / 5) : 0),
+                    height + (playerAction == ATTACK ? 1 : 0),
                     null);
-        } else {
+            clone.render(g);
+            drawHitbox(g);
+        } else
+
+        {
             System.out.println("Animations not loaded.");
             System.out.println(playerAction);
         }
@@ -90,11 +100,6 @@ public class Player extends Entity {
     private void updateAnimationTick() {
         aniTick++;
         try {
-            // if (attacking) {
-            //     aniSpeed = 10; // percepat
-            // } else {
-            //     aniSpeed = 30;
-            // }
             if (aniTick >= aniSpeed) {
                 aniTick = 0;
                 aniIndex++;
@@ -117,6 +122,7 @@ public class Player extends Entity {
         if (jump) {
             jump();
         }
+
         if (!right && !left && !inAir) {
             return;
         }
@@ -144,6 +150,7 @@ public class Player extends Entity {
             if (canMove(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
                 airSpeed += gravity;
+                // if (enable)
                 updateXPos(xSpeed);
             } else {
                 hitbox.y = GetEntityYPos(hitbox, airSpeed);
@@ -151,11 +158,11 @@ public class Player extends Entity {
                     resetInAir();
                 else
                     airSpeed = fallSpeedAfterCollision;
-
+                // if (enable)
                 updateXPos(xSpeed);
             }
         } else {
-
+            // if (enable)
             updateXPos(xSpeed);
         }
 
@@ -217,9 +224,11 @@ public class Player extends Entity {
     }
 
     public void update() {
-        updatePos();
         updateAnimationTick();
         setAnimation();
+        updatePos();
+
+        clone.update();
     }
 
     private BufferedImage flipImageHorizontally(BufferedImage imgAsal) {
@@ -245,4 +254,31 @@ public class Player extends Entity {
         right = false;
         attacking = false;
     }
+
+    public void setEnable(boolean enable) {
+        if (clone.aksi.equals("ghost")) {
+            if (!this.enable) {
+                clone.setMove(false, mkiri);
+            } else {
+                clone.setMove(true, mkiri);
+            }
+            playerAction = IDLE;
+            this.enable = enable;
+        }
+    }
+
+    public void moveToGhost() {
+        if (canMove(clone.x, clone.y, hitbox.width, hitbox.height, lvlData)) {
+            hitbox.x = clone.x;
+            hitbox.y = clone.y;
+            if (!isEntityOnFloor(hitbox, lvlData))
+                inAir = true;
+        }
+        clone.b = true;
+    }
+
+    public boolean isEnable() {
+        return this.enable;
+    }
+
 }
