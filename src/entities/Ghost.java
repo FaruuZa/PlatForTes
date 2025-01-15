@@ -18,7 +18,7 @@ import gamestates.Playing;
 import main.Game;
 import utilz.LoadSave;
 
-public class Clone extends Entity {
+public class Ghost extends Entity {
     private Player player;
     private boolean move = false;
     private boolean mKiri = false;
@@ -29,7 +29,7 @@ public class Clone extends Entity {
     public boolean a = false, b = true;
     private int ghostSpeed = (int) (1 * Game.SCALE);
 
-    public Clone(float x, float y, Player player) {
+    public Ghost(float x, float y, Player player) {
         super(x, y, (int) (50 * Game.SCALE), (int) (50 * Game.SCALE));
         initHitbox(x, y, (int) (24 * Game.SCALE), (int) (31 * Game.SCALE)); // Further reduce hitbox height
         loadAllAnimations();
@@ -74,11 +74,6 @@ public class Clone extends Entity {
     }
 
     public void update() {
-
-        if (a) {
-            player.moveToGhost();
-            a = false;
-        }
         if (move) {
             updatePos();
             updateHitbox();
@@ -105,7 +100,7 @@ public class Clone extends Entity {
                     aniIndex = 0;
                     if (aksi.equals("ghost_dead")) {
                         aksi = "ghost";
-                        a = true;
+                        player.moveToGhost();
                     }
                 }
             }

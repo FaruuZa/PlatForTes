@@ -37,18 +37,18 @@ public class Player extends Entity {
     private float fallSpeedAfterCollision = 0.5f * Game.SCALE;
     private boolean inAir = true;
     // a
-    private boolean enable = true;
-    private Clone clone;
+    private boolean ghosted = false;
+    private Ghost clone;
 
     public Player(float x, float y) {
         super(x, y, (int) (64 * Game.SCALE), (int) (58 * Game.SCALE));
         loadAllAnimations(); // Load all animations at once
         initHitbox(x, y, (int) (24 * Game.SCALE), (int) (31 * Game.SCALE)); // Further reduce hitbox height
-        clone = new Clone(x, y, this);
+        clone = new Ghost(x, y, this);
     }
 
     private void loadAllAnimations() {
-        for (String action : new String[] { IDLE, RUN, ATTACK, JUMP_START, JUMP_END }) {
+        for (String action : new String[] { IDLE, RUN, ATTACK, JUMP_START, JUMP_END, GHOST, GHOST_DEAD }) {
             BufferedImage img = LoadSave.getSpriteAtlas(action, LoadSave.PLAYER);
             System.out.println("Loading animation for action: " + action); // Debug statement
             if (img == null) {
@@ -104,7 +104,7 @@ public class Player extends Entity {
                 aniTick = 0;
                 aniIndex++;
                 if (aniIndex >= animations.length) {
-                    if (inAir)
+                    if (inAir && !ghosted)
                         aniIndex = animations.length - 1;
                     else
                         aniIndex = 0;
@@ -150,7 +150,7 @@ public class Player extends Entity {
             if (canMove(hitbox.x, hitbox.y + airSpeed, hitbox.width, hitbox.height, lvlData)) {
                 hitbox.y += airSpeed;
                 airSpeed += gravity;
-                // if (enable)
+                // if (enabled)
                 updateXPos(xSpeed);
             } else {
                 hitbox.y = GetEntityYPos(hitbox, airSpeed);
@@ -192,6 +192,7 @@ public class Player extends Entity {
     private void setAnimation() {
         String startAni = playerAction;
         aniSpeed = Math.round(120 / GetSpriteFrame(playerAction));
+
         if (moving) {
             if (!playerAction.equals(RUN)) {
                 playerAction = RUN;
@@ -215,7 +216,8 @@ public class Player extends Entity {
                 playerAction = ATTACK;
             }
         }
-
+        if (ghosted)
+            playerAction = GHOST;
         // Set the current animation based on playerAction
         if (startAni != playerAction) {
             aniIndex = 0; // Reset animation index
@@ -226,8 +228,8 @@ public class Player extends Entity {
     public void update() {
         updateAnimationTick();
         setAnimation();
-        updatePos();
-
+        if (!ghosted)
+            updatePos();
         clone.update();
     }
 
@@ -255,15 +257,15 @@ public class Player extends Entity {
         attacking = false;
     }
 
-    public void setEnable(boolean enable) {
+    public void setGhosted(boolean ghosted) {
         if (clone.aksi.equals("ghost")) {
-            if (!this.enable) {
+            if (this.ghosted) {
                 clone.setMove(false, mkiri);
+                moveToGhost();
             } else {
                 clone.setMove(true, mkiri);
+                this.ghosted = ghosted;
             }
-            playerAction = IDLE;
-            this.enable = enable;
         }
     }
 
@@ -274,11 +276,12 @@ public class Player extends Entity {
             if (!isEntityOnFloor(hitbox, lvlData))
                 inAir = true;
         }
+        this.ghosted = false;
         clone.b = true;
     }
 
-    public boolean isEnable() {
-        return this.enable;
+    public boolean isghosted() {
+        return this.ghosted;
     }
 
 }

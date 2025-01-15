@@ -23,7 +23,7 @@ public class Playing extends State implements StateMethods {
 
     private void initClasses() {
         lmanager = new LevelManager(game);
-        player = new Player(80, Game.GAME_HEIGHT - Game.TILES_SIZE * 2);
+        player = new Player(80, 100);
         player.loadLvlData(lmanager.getCurrentLevel());
         pauseOverlay = new PauseOverlay(this);
     }
@@ -95,11 +95,6 @@ public class Playing extends State implements StateMethods {
                 break;
             case KeyEvent.VK_BACK_SPACE:
                 paused = true;
-            case KeyEvent.VK_S:
-                if (player.isEnable())
-                    player.setEnable(false);
-                else
-                    player.setEnable(true);
             default:
                 break;
         }
@@ -117,6 +112,11 @@ public class Playing extends State implements StateMethods {
             case KeyEvent.VK_SPACE:
                 player.jump = false;
                 break;
+            case KeyEvent.VK_E:
+                if (player.isghosted())
+                    player.setGhosted(false);
+                else
+                    player.setGhosted(true);
             default:
                 break;
         }

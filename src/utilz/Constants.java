@@ -41,6 +41,8 @@ public class Constants {
         public static final String JUMP_START = "jump-Start";
         public static final String JUMP_END = "jump-End";
         public static final String ATTACK = "attack";
+        public static final String GHOST = "ghost";
+        public static final String GHOST_DEAD = "ghost_dead";
 
         public static int GetSpriteFrame(String player_action) {
             return switch (player_action) {
@@ -56,6 +58,10 @@ public class Constants {
                     4;
                 case JUMP_END ->
                     3;
+                case GHOST ->
+                    12;
+                case GHOST_DEAD ->
+                    12;
                 default ->
                     4;
             };
@@ -93,6 +99,16 @@ public class Constants {
                 case JUMP_END -> {
                     a[0] = 64;
                     a[1] = 64;
+                    return a;
+                }
+                case GHOST -> {
+                    a[0] = 128;
+                    a[1] = 128;
+                    return a;
+                }
+                case GHOST_DEAD -> {
+                    a[0] = 128;
+                    a[1] = 128;
                     return a;
                 }
                 default -> {
