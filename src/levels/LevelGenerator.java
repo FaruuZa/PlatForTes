@@ -13,30 +13,88 @@ public class LevelGenerator {
     private static final int TILE_43 = 43;
     private static final int TILE_55 = 55;
     private static final int TILE_57 = 57;
+    private static final int TILE_22 = 22;
+    private static final int TILE_144 = 144;
+    private static final int TILE_145 = 145;
+    private static final int TILE_146 = 146;
 
     private static final float SPECIAL_TILE_CHANCE = 0.2f;
+    private int maxHeight, maxWidth;
 
-    public int[][] generateLevel() {
-        int[][] level = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
+    public int[][] generateLevel(int width, int height) {
+        this.maxHeight = height;
+        this.maxWidth = width;
+        int[][] level = new int[maxHeight][maxWidth];
         generateGroundAndPlatforms(level);
         return level;
     }
 
     private void generateGroundAndPlatforms(int[][] level) {
-        for (int y = Game.TILES_IN_HEIGHT - 1; y >= 0; y--) {
-            for (int x = 0; x < Game.TILES_IN_WIDTH; x++) {
-                if (y == Game.TILES_IN_HEIGHT - 1) {
+        for (int y = maxHeight - 1; y >= 0; y--) {
+            for (int x = 0; x < maxWidth; x++) {
+                if (y == maxHeight - 1) {
                     // Ground layer
-                    level[y][x] = x == 0 ? GROUND_TILE_1 : getNextGroundTile(level[y][x - 1], x, y, level);
-                } else if (checkTileBelowRules(level, x, y) != EMPTY_TILE) {
+                    int empChance = random.nextFloat() < 0.5 ? EMPTY_TILE : GROUND_TILE_1;
+                    level[y][x] = x == 0 ? empChance : getNextGroundTile(level[y][x - 1], x, y, level);
+                } else if (checkTileBelowRules(level, x, y) != -1) {
                     int belowTileResult = checkTileBelowRules(level, x, y);
                     if (belowTileResult != EMPTY_TILE) {
                         level[y][x] = belowTileResult;
                         continue;
                     }
+                } else {
+                    level[y][x] = getNextPlat(level, x, y);
                 }
             }
         }
+    }
+
+    private int getNextPlat(int[][] level, int x, int y) {
+        if (x > 0) {
+            int leftTile = level[y][x - 1];
+            if (leftTile != EMPTY_TILE)
+                switch (leftTile) {
+                    case TILE_22:
+                        break;
+                    case TILE_144:
+                        if (x < maxWidth - 1) {
+                            int diagBelow = level[y + 1][x + 1];
+                            if (diagBelow != EMPTY_TILE)
+                                return TILE_146;
+                            return random.nextFloat() < 0.6f ? TILE_145 : TILE_146;
+                        }
+                    case TILE_145:
+                        if (x < maxWidth - 1) {
+                            int diagBelow = level[y + 1][x + 1];
+                            if (diagBelow != EMPTY_TILE)
+                                return TILE_146;
+                            return random.nextFloat() < 0.5f ? TILE_145 : TILE_146;
+                        }
+                    case TILE_146:
+                        break;
+                }
+            else {
+                if (y < maxHeight - 3 && y > 0) {
+                    int bot2 = level[y + 3][x];
+                    int bot3 = level[y + 2][x];
+                    if (bot2 == EMPTY_TILE && bot3 == EMPTY_TILE) {
+                        if (x < maxWidth - 1) {
+                            int diagBelow = level[y + 1][x + 1];
+                            if (diagBelow == EMPTY_TILE) {
+                                float chance = random.nextFloat();
+                                if (chance < 0.1f)
+                                    return TILE_22;
+                                if (chance < 0.25f)
+                                    return TILE_144;
+                                return EMPTY_TILE;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return EMPTY_TILE;
     }
 
     private int getNextGroundTile(int previousTile, int x, int y, int[][] level) {
@@ -45,13 +103,13 @@ public class LevelGenerator {
         if (tileBelowResult != EMPTY_TILE) {
             return tileBelowResult;
         }
-
         // Then check horizontal sequence rules
         switch (previousTile) {
             case GROUND_TILE_1:
             case GROUND_TILE_2:
                 return random.nextFloat() < SPECIAL_TILE_CHANCE ? TILE_57 : GROUND_TILE_2;
-
+            case GROUND_TILE_3:
+                return EMPTY_TILE;
             case TILE_57:
                 float chance = random.nextFloat();
                 if (chance < 0.33f)
@@ -77,7 +135,7 @@ public class LevelGenerator {
     private Random random = new Random();
 
     private int checkTileBelowRules(int[][] level, int x, int y) {
-        if (y >= Game.TILES_IN_HEIGHT - 1)
+        if (y >= maxHeight - 1)
             return EMPTY_TILE;
 
         int tileBelow = level[y + 1][x];
@@ -101,7 +159,7 @@ public class LevelGenerator {
                     if (leftTile == GROUND_TILE_1 || leftTile == GROUND_TILE_2)
                         return GROUND_TILE_3;
                 }
-                return random.nextFloat() < 0.5f ? TILE_42 : GROUND_TILE_3;
+                return TILE_42;
             case TILE_12:
                 if (x > 0) {
                     int leftTile = level[y][x - 1];
@@ -109,8 +167,16 @@ public class LevelGenerator {
                         return GROUND_TILE_2;
                 }
                 return TILE_12;
-            default:
+            case TILE_22:
                 return EMPTY_TILE;
+            case TILE_144:
+                return EMPTY_TILE;
+            case TILE_145:
+                return EMPTY_TILE;
+            case TILE_146:
+                return EMPTY_TILE;
+            default:
+                return -1;
         }
     }
 }

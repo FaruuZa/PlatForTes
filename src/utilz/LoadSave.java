@@ -23,6 +23,7 @@ public class LoadSave {
     public static final String URM_BUTTONS = "urm_buttons";
 	public static final String VOLUME_BUTTONS = "volume_buttons";
 	public static final String TILES = "tiles";
+	public static final String GRASS_BACKGROUND = "wood_background";
 
     public static BufferedImage getSpriteAtlas(String file, String folder) {
         String path = "/res/" + folder + "/" + file + ".png";

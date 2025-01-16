@@ -23,11 +23,15 @@ public class LevelManager {
     public LevelManager(Game game) {
         this.game = game;
         loadAssets(); // Load assets when the LevelManager is initialized
-        getLevelData();
+        loadLevelData();
     }
 
-    private void getLevelData() {
+    private void loadLevelData() {
         levelData = levelOne.getLevelData();
+    }
+
+    public int[][] getLevelData() {
+        return levelData;
     }
 
     private void loadAssets() {
@@ -76,13 +80,14 @@ public class LevelManager {
         return assetMap.get("Tiles").get(index - 1); // Adjust index as needed
     }
 
-    public void render(Graphics g) {
+    public void render(Graphics g, int xLvlOffset) {
         for (int row = 0; row < levelData.length; row++) {
             for (int col = 0; col < levelData[row].length; col++) {
                 int tileIndex = levelData[row][col];
                 if (tileIndex != 0) { // If it's not empty
                     BufferedImage tile = getTile(tileIndex); // Assuming a method to get the tile
-                    g.drawImage(tile, col * Game.TILES_SIZE, row * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE,
+                    g.drawImage(tile, Game.TILES_SIZE * col - xLvlOffset, row * Game.TILES_SIZE, Game.TILES_SIZE,
+                            Game.TILES_SIZE,
                             null); // Adjust positions as needed
                 }
             }
@@ -93,7 +98,7 @@ public class LevelManager {
         // Update logic here
     }
 
-    public LevelOne getCurrentLevel(){
+    public LevelOne getCurrentLevel() {
         return levelOne;
     }
 }

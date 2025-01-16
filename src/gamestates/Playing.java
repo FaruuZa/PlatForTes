@@ -1,5 +1,6 @@
 package gamestates;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -16,6 +17,13 @@ public class Playing extends State implements StateMethods {
     private boolean paused;
     private PauseOverlay pauseOverlay;
 
+    private int xLvlOffset;
+    private int leftBorder = (int) (0.2 * Game.GAME_WIDTH);
+    private int rightBorder = (int) (0.8 * Game.GAME_WIDTH);
+    private int lvlTilesWide;
+    private int maxTilesOffset;
+    private int maxLevelOffsetX;
+
     public Playing(Game game) {
         super(game);
         initClasses();
@@ -23,7 +31,10 @@ public class Playing extends State implements StateMethods {
 
     private void initClasses() {
         lmanager = new LevelManager(game);
-        player = new Player(80, 100);
+        lvlTilesWide = lmanager.getLevelData()[0].length;
+        maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
+        maxLevelOffsetX = maxTilesOffset * Game.TILES_SIZE;
+        player = new Player(200, 100);
         player.loadLvlData(lmanager.getCurrentLevel());
         pauseOverlay = new PauseOverlay(this);
     }
@@ -33,18 +44,36 @@ public class Playing extends State implements StateMethods {
         if (!paused) {
             lmanager.update();
             player.update();
+            checkCloseToBorder();
         } else {
             pauseOverlay.update();
         }
     }
 
+    private void checkCloseToBorder() {
+        int playerX = (int) player.getHitbox().x;
+        int diff = playerX - xLvlOffset;
+
+        if (diff > rightBorder)
+            xLvlOffset += diff - rightBorder;
+        else if (diff < leftBorder)
+            xLvlOffset += diff - leftBorder;
+
+        if (xLvlOffset > maxLevelOffsetX)
+            xLvlOffset = maxLevelOffsetX;
+        else if (xLvlOffset < 0)
+            xLvlOffset = 0;
+    }
+
     @Override
     public void render(Graphics g) {
-        lmanager.render(g);
-        player.render(g);
-
-        if (paused)
+        lmanager.render(g, xLvlOffset);
+        player.render(g, xLvlOffset);
+        if (paused) {
+            g.setColor(new Color(0, 0, 0, 150));
+            g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             pauseOverlay.render(g);
+        }
     }
 
     @Override
@@ -95,6 +124,13 @@ public class Playing extends State implements StateMethods {
                 break;
             case KeyEvent.VK_BACK_SPACE:
                 paused = true;
+                break;
+            case KeyEvent.VK_E:
+                player.moveGhost();
+                break;
+            case KeyEvent.VK_S:
+                player.ghostSkill();
+                break;
             default:
                 break;
         }
@@ -112,11 +148,6 @@ public class Playing extends State implements StateMethods {
             case KeyEvent.VK_SPACE:
                 player.jump = false;
                 break;
-            case KeyEvent.VK_E:
-                if (player.isghosted())
-                    player.setGhosted(false);
-                else
-                    player.setGhosted(true);
             default:
                 break;
         }
