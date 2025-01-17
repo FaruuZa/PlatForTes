@@ -56,7 +56,7 @@ public class Playing extends State implements StateMethods {
     public void update() {
         if (!paused) {
             lmanager.update();
-            eManager.update();
+            eManager.update(getLvlData());
             player.update();
             checkCloseToBorder();
         } else {

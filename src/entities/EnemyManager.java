@@ -51,9 +51,9 @@ public class EnemyManager {
         }
     }
 
-    public void update() {
+    public void update(int[][] lvlData) {
         for (Tauro t : tauros)
-            t.update();
+            t.update(lvlData);
     }
 
     public void render(Graphics g, int xLvlOffset) {
@@ -61,8 +61,12 @@ public class EnemyManager {
     }
 
     private void drawTauros(Graphics g, int xLvlOffset) {
-        for (Tauro t : tauros)
-            g.drawImage(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()], (int) t.hitbox.x - xLvlOffset, (int) t.hitbox.y,
+        for (Tauro t : tauros) {
+            g.drawImage(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()], (int) t.hitbox.x - xLvlOffset,
+                    (int) t.hitbox.y,
                     (int) t.width, (int) t.height, null);
+            t.drawHitbox(g, xLvlOffset);
+        }
+
     }
 }

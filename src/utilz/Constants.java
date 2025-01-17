@@ -126,6 +126,8 @@ public class Constants {
             public static final String DEAD = "dead";
             public static final String IDLE2 = "idle2";
             public static final String ATTACK = "attack";
+            public static final int DRAW_OFFSET_X = (int) (26*Game.SCALE);
+            public static final int DRAW_OFFSET_Y = (int) (9*Game.SCALE);
 
             public static int GetSpriteFrame(String tauro_action) {
                 return switch (tauro_action) {
