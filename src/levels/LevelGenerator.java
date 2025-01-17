@@ -17,6 +17,7 @@ public class LevelGenerator {
     private static final int TILE_144 = 144;
     private static final int TILE_145 = 145;
     private static final int TILE_146 = 146;
+    private static final int TAURO = -2;
 
     private static final float SPECIAL_TILE_CHANCE = 0.2f;
     private int maxHeight, maxWidth;
@@ -26,7 +27,29 @@ public class LevelGenerator {
         this.maxWidth = width;
         int[][] level = new int[maxHeight][maxWidth];
         generateGroundAndPlatforms(level);
+        addEnemies(level);
         return level;
+    }
+
+    private void addEnemies(int[][] level) {
+        int enemies = 10;
+        for (int y = maxHeight - 2; y > 1; y--) {
+            for (int x = 6; x < maxWidth-1; x++) {
+                if (y <= maxHeight - 2) {
+                    if (level[y + 1][x] > EMPTY_TILE && level[y + 1][x+1] > EMPTY_TILE && level[y + 1][x-1] > EMPTY_TILE
+                            && enemies > 0) {
+                        if (level[y][x] == EMPTY_TILE) {
+                            // Randomly select enemy type
+                            int enemyType = random.nextFloat() < 0.5f ? TAURO : TAURO; // Randomly choose between TAURO
+                                                                                       // and GHOST
+                            level[y][x] = random.nextFloat() < 0.07f ? enemyType : EMPTY_TILE;
+                            if (level[y][x] < EMPTY_TILE)
+                                enemies--;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void generateGroundAndPlatforms(int[][] level) {
@@ -34,8 +57,7 @@ public class LevelGenerator {
             for (int x = 0; x < maxWidth; x++) {
                 if (y == maxHeight - 1) {
                     // Ground layer
-                    int empChance = random.nextFloat() < 0.5 ? EMPTY_TILE : GROUND_TILE_1;
-                    level[y][x] = x == 0 ? empChance : getNextGroundTile(level[y][x - 1], x, y, level);
+                    level[y][x] = x == 0 ? GROUND_TILE_1 : getNextGroundTile(level[y][x - 1], x, y, level);
                 } else if (checkTileBelowRules(level, x, y) != -1) {
                     int belowTileResult = checkTileBelowRules(level, x, y);
                     if (belowTileResult != EMPTY_TILE) {
@@ -74,7 +96,7 @@ public class LevelGenerator {
                         break;
                 }
             else {
-                if (y < maxHeight - 3 && y > 0) {
+                if (y < maxHeight - 3 && y > 1) {
                     int bot2 = level[y + 3][x];
                     int bot3 = level[y + 2][x];
                     if (bot2 == EMPTY_TILE && bot3 == EMPTY_TILE) {
@@ -110,9 +132,11 @@ public class LevelGenerator {
                 return random.nextFloat() < SPECIAL_TILE_CHANCE ? TILE_57 : GROUND_TILE_2;
             case GROUND_TILE_3:
                 return EMPTY_TILE;
+            case EMPTY_TILE:
+                return random.nextFloat() < SPECIAL_TILE_CHANCE ? GROUND_TILE_1 : EMPTY_TILE;
             case TILE_57:
                 float chance = random.nextFloat();
-                if (chance < 0.33f)
+                if (chance < 0.43f)
                     return TILE_12;
                 if (chance < 0.66f)
                     return TILE_42;
@@ -122,7 +146,7 @@ public class LevelGenerator {
                 return EMPTY_TILE;
 
             case TILE_55:
-                return random.nextFloat() < 0.5f ? GROUND_TILE_2 : GROUND_TILE_3;
+                return random.nextFloat() < 0.6f ? GROUND_TILE_2 : GROUND_TILE_3;
 
             case TILE_12:
                 return random.nextFloat() < 0.5f ? TILE_12 : TILE_42;

@@ -9,21 +9,32 @@ import levels.LevelManager; // Import LevelManager
 import java.io.InputStream; // Import InputStream
 import javax.imageio.ImageIO; // Import ImageIO
 
+import entities.Tauro;
 import main.Game;
+import java.io.BufferedReader; // Import BufferedReader
+import java.io.InputStreamReader; // Import InputStreamReader
+// import org.json.JSONObject; // Import JSONObject
+import java.util.ArrayList;
 
 public class LoadSave {
 
     public static final String PLAYER = "player";
     public static final String LEVEL = "level";
     public static final String LEVEL_ONE_DATA = "level_one_data";
-    public static final String MENU_BUTTONS= "menu_buttons";
-    public static final String MENU_BACKGROUND= "menu_background";
+    public static final String MENU_BUTTONS = "menu_buttons";
+    public static final String MENU_BACKGROUND = "menu_background";
     public static final String PAUSE_BACKGROUND = "pause_background";
     public static final String SOUND_BUTTONS = "sound_buttons";
     public static final String URM_BUTTONS = "urm_buttons";
-	public static final String VOLUME_BUTTONS = "volume_buttons";
-	public static final String TILES = "tiles";
-	public static final String GRASS_BACKGROUND = "wood_background";
+    public static final String VOLUME_BUTTONS = "volume_buttons";
+    public static final String TILES = "tiles";
+    public static final String MENU_BG_IMAGE = "wood_background";
+    public static final String PLAYING_BG_IMAGE = "1bg";
+    public static final String PLAYING_BG_IMAGE2 = "2bg2";
+    public static final String PLAYING_BG_WATER = "3water";
+    public static final String PLAYING_BG_ROCKB = "4rockback";
+    public static final String PLAYING_BG_ROCKF = "5rockfront";
+    public static final String ENEMY_TAURO = "enemies/tauro";
 
     public static BufferedImage getSpriteAtlas(String file, String folder) {
         String path = "/res/" + folder + "/" + file + ".png";
@@ -38,19 +49,15 @@ public class LoadSave {
         }
     }
 
-    public static int[][] GetLevelData() {
-        int[][] lvlData = new int[Game.TILES_IN_HEIGHT][Game.TILES_IN_WIDTH];
-        BufferedImage img = getSpriteAtlas(LEVEL_ONE_DATA, LEVEL);
-        for (int i = 0; i < img.getHeight(); i++) {
-            for (int j = 0; j < img.getWidth(); j++) {
-                Color color = new Color(img.getRGB(i, j));
-                int value = color.getRed();
-                if (value >= 48)
-                    value = 0;
-                lvlData[i][j] = value;
+    public static ArrayList<Tauro> getTauro(int[][] lvlData) {
+        ArrayList<Tauro> tauros = new ArrayList<>();
+        for (int y = 0; y < lvlData.length; y++) {
+            for (int x = 0; x < lvlData[y].length; x++) {
+                if (lvlData[y][x] == -2)
+                    tauros.add(new Tauro(x * Game.TILES_SIZE, y * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE));
             }
         }
-        return lvlData;
+        return tauros;
     }
 
 }

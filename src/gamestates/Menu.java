@@ -20,7 +20,7 @@ public class Menu extends State implements StateMethods {
         super(game);
         loadButtons();
         loadBackground();
-        grassBackground = LoadSave.getSpriteAtlas(LoadSave.GRASS_BACKGROUND, "UI");
+        grassBackground = LoadSave.getSpriteAtlas(LoadSave.MENU_BG_IMAGE, "UI");
     }
 
     private void loadBackground() {

@@ -82,7 +82,7 @@ public class Ghost extends Entity {
         if (aksi.equals("ghost"))
             aniSpeed = 30;
         else
-            aniSpeed = 10;
+            aniSpeed = 15;
         try {
             if (aniTick >= aniSpeed) {
                 aniTick = 0;
@@ -107,12 +107,12 @@ public class Ghost extends Entity {
     public void render(Graphics g, int xLvlOffset) {
         if (isAlive()) {
             if (mKiri) {
-                g.drawImage(flipImageHorizontally(images[aniIndex]), (int) x - xLvlOffset, (int) y,
-                        (int) (32 * Game.SCALE),
-                        (int) (32 * Game.SCALE), null);
+                g.drawImage(flipImageHorizontally(images[aniIndex]), (int) (x+6*Game.SCALE) - xLvlOffset, (int) (y-6*Game.SCALE),
+                        (int) (34 * Game.SCALE),
+                        (int) (34 * Game.SCALE), null);
             } else {
-                g.drawImage(images[aniIndex], (int) x - xLvlOffset, (int) y, (int) (32 * Game.SCALE),
-                        (int) (32 * Game.SCALE), null);
+                g.drawImage(images[aniIndex], (int) (x-6*Game.SCALE) - xLvlOffset, (int) (y-6*Game.SCALE), (int) (34 * Game.SCALE),
+                        (int) (34 * Game.SCALE), null);
             }
         }
     }

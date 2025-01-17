@@ -119,12 +119,36 @@ public class Constants {
 
     }
 
-    public static class LevelConstants {
-        public static final String BUILDINGS = "Buildings";
-        public static final String HIVES = "Hives";
-        public static final String INTERIORS = "Interiors";
-        public static final String TILES = "Tiles";
-        public static final String ROCKS = "Rocks";
-        public static final String TREES = "Trees";
+    public static class EnemyConstants {
+        public static class Tauro {
+            public static final String IDLE = "idle";
+            public static final String WALK = "walk";
+            public static final String DEAD = "dead";
+            public static final String IDLE2 = "idle2";
+            public static final String ATTACK = "attack";
+
+            public static int GetSpriteFrame(String tauro_action) {
+                return switch (tauro_action) {
+                    case IDLE ->
+                        5; // 4
+                    case ATTACK ->
+                        7;
+                    case WALK ->
+                        8; // 8
+                    case DEAD ->
+                        10;
+                    case IDLE2 ->
+                        5;
+                    default ->
+                        0;
+                };
+            }
+
+            
+            public static int[] GetSpriteSize(String tauro_action) {
+                int[] a = {128,128};
+                return a;
+            }
+        }
     }
 }

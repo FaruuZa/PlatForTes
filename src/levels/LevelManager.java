@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage; // Import BufferedImage
 
 import main.Game;
 import utilz.LoadSave;
-import utilz.Constants.LevelConstants;
 
 public class LevelManager {
     private Game game;
@@ -36,7 +35,7 @@ public class LevelManager {
 
     private void loadAssets() {
         // Initialize the asset lists in the map
-        String[] assetNames = { "Hives", "Buildings", "Interiors", "Tiles", "Trees" };
+        String[] assetNames = { "Tiles" };
         for (String assetName : assetNames) {
             assetMap.put(assetName, new ArrayList<>());
             // Load the assets using LoadSave.getSpriteAtlas
@@ -84,7 +83,7 @@ public class LevelManager {
         for (int row = 0; row < levelData.length; row++) {
             for (int col = 0; col < levelData[row].length; col++) {
                 int tileIndex = levelData[row][col];
-                if (tileIndex != 0) { // If it's not empty
+                if (tileIndex > 0) { // If it's not empty
                     BufferedImage tile = getTile(tileIndex); // Assuming a method to get the tile
                     g.drawImage(tile, Game.TILES_SIZE * col - xLvlOffset, row * Game.TILES_SIZE, Game.TILES_SIZE,
                             Game.TILES_SIZE,

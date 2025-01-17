@@ -11,7 +11,6 @@ import static utilz.HelpMethods.*;
 import java.util.HashMap; // Import HashMap
 import java.util.Map; // Import Map
 
-import gamestates.Playing;
 import levels.LevelOne;
 import main.Game;
 
@@ -80,12 +79,12 @@ public class Player extends Entity {
             if (mkiri) {
                 currentAnimation = flipImageHorizontally(currentAnimation); // Flip the image if facing left
             }
+            clone.render(g, xLvlOffset);
             g.drawImage(currentAnimation, (int) (hitbox.x - xDrawOffset) - xLvlOffset,
                     (int) (hitbox.y - yDrawOffset),
                     width + (playerAction == ATTACK ? (this.width / 5) : 0),
                     height + (playerAction == ATTACK ? 1 : 0),
                     null);
-            clone.render(g, xLvlOffset);
         } else
 
         {

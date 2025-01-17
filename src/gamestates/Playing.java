@@ -4,16 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
+import entities.EnemyManager;
 import entities.Player;
 import levels.LevelManager;
 import main.Game;
 import ui.PauseOverlay;
+import utilz.LoadSave;
 
 public class Playing extends State implements StateMethods {
 
     private Player player;
     private LevelManager lmanager;
+    private EnemyManager eManager;
     private boolean paused;
     private PauseOverlay pauseOverlay;
 
@@ -24,13 +28,22 @@ public class Playing extends State implements StateMethods {
     private int maxTilesOffset;
     private int maxLevelOffsetX;
 
+    BufferedImage backgroundImg, backgroundImg2, water, rockb, rockf;
+
     public Playing(Game game) {
         super(game);
         initClasses();
+        backgroundImg = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_IMAGE, "level");
+        backgroundImg2 = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_IMAGE2, "level");
+        water = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_WATER, "level");
+        rockb = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_ROCKB, "level");
+        rockf = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_ROCKF, "level");
+
     }
 
     private void initClasses() {
         lmanager = new LevelManager(game);
+        eManager = new EnemyManager(this);
         lvlTilesWide = lmanager.getLevelData()[0].length;
         maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
         maxLevelOffsetX = maxTilesOffset * Game.TILES_SIZE;
@@ -43,6 +56,7 @@ public class Playing extends State implements StateMethods {
     public void update() {
         if (!paused) {
             lmanager.update();
+            eManager.update();
             player.update();
             checkCloseToBorder();
         } else {
@@ -67,12 +81,27 @@ public class Playing extends State implements StateMethods {
 
     @Override
     public void render(Graphics g) {
+        drawBackGround(g);
         lmanager.render(g, xLvlOffset);
         player.render(g, xLvlOffset);
+        eManager.render(g, xLvlOffset);
         if (paused) {
             g.setColor(new Color(0, 0, 0, 150));
             g.fillRect(0, 0, Game.GAME_WIDTH, Game.GAME_HEIGHT);
             pauseOverlay.render(g);
+        }
+    }
+
+    public void drawBackGround(Graphics g) {
+
+        for (int i = 0; i < 3; i++) {
+            g.drawImage(backgroundImg, (int) (i * (Game.GAME_WIDTH / 3)), 0, Game.GAME_WIDTH / 3, Game.GAME_HEIGHT,
+                    null);
+            g.drawImage(backgroundImg2, (int) (i * (Game.GAME_WIDTH / 3)), 0, Game.GAME_WIDTH / 3, Game.GAME_HEIGHT,
+                    null);
+            g.drawImage(water, (int) (i * (Game.GAME_WIDTH / 3)), 0, Game.GAME_WIDTH / 3, Game.GAME_HEIGHT, null);
+            g.drawImage(rockb, (int) (i * (Game.GAME_WIDTH / 3)), 0, Game.GAME_WIDTH / 3, Game.GAME_HEIGHT, null);
+            g.drawImage(rockf, (int) (i * (Game.GAME_WIDTH / 3)), 0, Game.GAME_WIDTH / 3, Game.GAME_HEIGHT, null);
         }
     }
 
@@ -163,6 +192,10 @@ public class Playing extends State implements StateMethods {
 
     public void unpause() {
         paused = false;
+    }
+
+    public int[][] getLvlData(){
+        return lmanager.getLevelData();
     }
 
 }
