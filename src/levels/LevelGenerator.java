@@ -1,7 +1,6 @@
 package levels;
 
 import java.util.Random;
-import main.Game;
 
 public class LevelGenerator {
     private static final int GROUND_TILE_1 = 1;
@@ -34,15 +33,17 @@ public class LevelGenerator {
     private void addEnemies(int[][] level) {
         int enemies = 10;
         for (int y = maxHeight - 2; y > 1; y--) {
-            for (int x = 6; x < maxWidth-1; x++) {
+            for (int x = 6; x < maxWidth - 1; x++) {
                 if (y <= maxHeight - 2) {
-                    if (level[y + 1][x] > EMPTY_TILE && level[y + 1][x+1] > EMPTY_TILE && level[y + 1][x-1] > EMPTY_TILE
+                    if (level[y + 1][x] > EMPTY_TILE && level[y + 1][x + 1] > EMPTY_TILE
+                            && level[y + 1][x - 1] > EMPTY_TILE
                             && enemies > 0) {
-                        if (level[y][x] == EMPTY_TILE) {
+                        if (level[y][x] == EMPTY_TILE && level[y - 1][x] == EMPTY_TILE) {
                             // Randomly select enemy type
                             int enemyType = random.nextFloat() < 0.5f ? TAURO : TAURO; // Randomly choose between TAURO
                                                                                        // and GHOST
-                            level[y][x] = random.nextFloat() < 0.07f ? enemyType : EMPTY_TILE;
+                            if (level[y][x + 1] == EMPTY_TILE && level[y][x - 1] == EMPTY_TILE)
+                                level[y - 1][x] = random.nextFloat() < 0.1f ? enemyType : EMPTY_TILE;
                             if (level[y][x] < EMPTY_TILE)
                                 enemies--;
                         }

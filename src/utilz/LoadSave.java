@@ -1,19 +1,13 @@
 package utilz;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import java.io.IOException; // Import IOException
-import java.awt.image.BufferedImage; // Import BufferedImage
-import levels.LevelManager; // Import LevelManager
 import java.io.InputStream; // Import InputStream
 import javax.imageio.ImageIO; // Import ImageIO
 
 import entities.Tauro;
 import main.Game;
-import java.io.BufferedReader; // Import BufferedReader
-import java.io.InputStreamReader; // Import InputStreamReader
-// import org.json.JSONObject; // Import JSONObject
 import java.util.ArrayList;
 
 public class LoadSave {
@@ -54,7 +48,7 @@ public class LoadSave {
         for (int y = 0; y < lvlData.length; y++) {
             for (int x = 0; x < lvlData[y].length; x++) {
                 if (lvlData[y][x] == -2)
-                    tauros.add(new Tauro(x * Game.TILES_SIZE, y * Game.TILES_SIZE, Game.TILES_SIZE, Game.TILES_SIZE));
+                    tauros.add(new Tauro(x * Game.TILES_SIZE, y * Game.TILES_SIZE, (int) (42*Game.SCALE), (int) (50* Game.SCALE)));
             }
         }
         return tauros;

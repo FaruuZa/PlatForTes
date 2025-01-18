@@ -3,24 +3,23 @@ package entities;
 import static utilz.Constants.EnemyConstants.Tauro.*;
 import static utilz.HelpMethods.*;
 
-import java.awt.Graphics;
-
 import main.Game;
-import utilz.Constants.EnemyConstants.Tauro;
 
 public abstract class Enemy extends Entity {
 
-    private int aniIndex, enemytype;
-    private int aniTick, aniSpeed;
-    private String enemyState = IDLE;
-    private boolean firstUpdate = true;
-    private boolean inAir = false;
-    private float fallSpeed = 0f;
-    private float gravity = 0.04f * Game.SCALE;
-    private int arah = 1;
-    private float walkSpeed = 1.0f * Game.SCALE;
+    protected int aniIndex, enemytype;
+    protected int aniTick, aniSpeed;
+    protected String enemyState = IDLE;
+    protected boolean firstUpdate = true;
+    protected boolean inAir = false;
+    protected float fallSpeed = 0f;
+    protected float gravity = 0.04f * Game.SCALE;
+    protected int arah = 1;
+    protected float walkSpeed = 0.4f * Game.SCALE;
+    protected int tileY;
+    protected float attackRange = Game.TILES_SIZE;
 
-    private int maxFrame; // max frame of animation
+    protected int maxFrame; // max frame of animation
 
     public Enemy(float x, float y, int width, int height, int enemytype) {
         super(x, y, width, height);
@@ -28,86 +27,93 @@ public abstract class Enemy extends Entity {
         initHitbox(x, y, width, height);
     }
 
-    private void updateAnimationTick() {
+    protected boolean canSeePlayer(int[][] lvlData, Player player) {
+        int playerTileY = (int) (player.hitbox.y / Game.TILES_SIZE);
+
+        if (playerTileY == tileY) {
+            if (isPlayerInRange(player)) {
+                if (IsSightClear(lvlData, hitbox, player.hitbox, tileY))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    protected void turnTowardsPlayer(Player player) {
+        if (player.hitbox.x > hitbox.x)
+            arah = 1;
+        else
+            arah = 0;// 0 = left, 1 = right
+    }
+
+    protected boolean isPlayerInRange(Player player) {
+        int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
+        return absValue <= attackRange * 5;
+    }
+
+    protected boolean isPlayerCloseForAttack(Player player) {
+        int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
+        return absValue <= attackRange;
+    }
+
+    protected void firstUpdateCheck(int[][] lvlData) {
+        if (firstUpdate) {
+            if (!IsEntityOnFloor(hitbox, lvlData)) {
+                inAir = true;
+            }
+            firstUpdate = false;
+        }
+    }
+
+    protected void updateInAir(int[][] lvlData) {
+        if (canMove(hitbox.x, hitbox.y + fallSpeed, width, height, lvlData)) {
+            hitbox.y += fallSpeed;
+            fallSpeed += gravity;
+        } else {
+            inAir = false;
+            hitbox.y = GetEntityYPos(hitbox, fallSpeed);
+            tileY = (int) (hitbox.y / Game.TILES_SIZE) +1;
+        }
+    }
+
+    protected void move(int[][] lvlData) {
+        float xSpeed = 0;
+
+        if (arah == 0) {
+            xSpeed = -walkSpeed;
+        } else {
+            xSpeed = walkSpeed;
+        }
+
+        if (canMove(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
+            if (IsFloor(hitbox, xSpeed, lvlData, arah)) {
+                hitbox.x += xSpeed;
+                return;
+            }
+        }
+
+        changeWalkDir();
+    }
+
+    protected void updateAnimationTick() {
         aniTick++;
         if (aniTick >= aniSpeed) {
             aniTick = 0;
             aniIndex++;
             if (aniIndex >= maxFrame) {
-                aniIndex = 0;
+                aniIndex = 0;// reset to first frame
+                if (enemyState == ATTACK) 
+                    enemyState = IDLE;
+                
             }
         }
     }
 
     public void update(int[][] lvlData) {
-        updateMove(lvlData);
-        updateAnimation();
-        updateHitbox();
-        updateAnimationTick();
-    }
-
-    private void updateAnimation() {
-        if (enemyState.equals(IDLE)) {
-            maxFrame = Tauro.GetSpriteFrame(IDLE);
-            aniSpeed = 120 / maxFrame;
-        }else if(enemyState.equals(WALK)){
-            maxFrame = Tauro.GetSpriteFrame(WALK);
-            aniSpeed = 120 / maxFrame;
-        }
 
     }
 
-    private void updateMove(int[][] lvlData) {
-
-        if (firstUpdate) {
-            if (!isEntityOnFloor(hitbox, lvlData)) {
-                inAir = true;
-            }
-            firstUpdate = false;
-        }
-
-        if (inAir) {
-            if (canMove(hitbox.x, hitbox.y + fallSpeed, width, height, lvlData)) {
-                hitbox.y += fallSpeed;
-                fallSpeed += gravity;
-            } else {
-                inAir = false;
-                hitbox.y = GetEntityYPos(hitbox, fallSpeed);
-            }
-
-        } else {
-            switch (enemyState) {
-                case IDLE:
-                    enemyState = WALK;
-                    break;
-                case WALK:
-                    float xSpeed = 0;
-
-                    if (arah == 0) {
-                        xSpeed = -walkSpeed;
-                    } 
-                    // else {
-                    //     xSpeed = walkSpeed;
-                    // }
-
-                    // if (canMove(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
-                        // if (isFloor(hitbox, xSpeed, lvlData)) {
-                            // System.out.println(xSpeed);
-                            hitbox.x += xSpeed;
-                            // return;
-                        // }
-                    // }
-
-                    // changeWalkDir();
-
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    private void changeWalkDir() {
+    protected void changeWalkDir() {
         arah = (arah == 0) ? 1 : 0;
     }
 
@@ -117,5 +123,13 @@ public abstract class Enemy extends Entity {
 
     public String getEnemyState() {
         return enemyState;
+    }
+
+    protected void newState(String enemyState) {
+        this.enemyState = enemyState;
+        aniTick = 0;
+        aniIndex = 0;
+        maxFrame = GetSpriteFrame(enemyState);
+        aniSpeed = 120 / maxFrame;
     }
 }

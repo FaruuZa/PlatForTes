@@ -137,7 +137,7 @@ public class Player extends Entity {
         }
 
         if (!inAir) {
-            if (!isEntityOnFloor(hitbox, lvlData)) {
+            if (!IsEntityOnFloor(hitbox, lvlData)) {
                 inAir = true;
             }
         }
@@ -266,7 +266,7 @@ public class Player extends Entity {
         if (canMove(clone.x, clone.y, hitbox.width, hitbox.height, lvlData)) {
             hitbox.x = clone.x;
             hitbox.y = clone.y;
-            if (!isEntityOnFloor(hitbox, lvlData))
+            if (!IsEntityOnFloor(hitbox, lvlData))
                 inAir = true;
         }
     }

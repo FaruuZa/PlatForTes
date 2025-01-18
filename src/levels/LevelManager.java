@@ -6,7 +6,6 @@ import java.util.ArrayList; // Import ArrayList
 import java.util.HashMap; // Import HashMap
 import java.util.List; // Import List
 import java.util.Map; // Import Map
-import java.awt.image.BufferedImage; // Import BufferedImage
 
 import main.Game;
 import utilz.LoadSave;

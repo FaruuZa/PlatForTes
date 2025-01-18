@@ -14,7 +14,6 @@ public class EnemyManager {
 
     private Playing playing;
     private Map<String, BufferedImage[]> animationsMapTauro = new HashMap<>();
-    private BufferedImage[] animationTauro;
     private ArrayList<Tauro> tauros = new ArrayList<>();
 
     public EnemyManager(Playing playing) {
@@ -51,9 +50,9 @@ public class EnemyManager {
         }
     }
 
-    public void update(int[][] lvlData) {
+    public void update(int[][] lvlData, Player player) {
         for (Tauro t : tauros)
-            t.update(lvlData);
+            t.update(lvlData, player);
     }
 
     public void render(Graphics g, int xLvlOffset) {
@@ -62,11 +61,31 @@ public class EnemyManager {
 
     private void drawTauros(Graphics g, int xLvlOffset) {
         for (Tauro t : tauros) {
-            g.drawImage(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()], (int) t.hitbox.x - xLvlOffset,
-                    (int) t.hitbox.y,
-                    (int) t.width, (int) t.height, null);
-            t.drawHitbox(g, xLvlOffset);
+            if (t.arah == 1)
+                g.drawImage(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()], (int) t.hitbox.x - xLvlOffset,
+                        (int) t.hitbox.y,
+                        (int) t.width, (int) t.height, null);
+            if (t.arah == 0)
+                g.drawImage(flipImageHorizontally(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()]),
+                        (int) t.hitbox.x - xLvlOffset,
+                        (int) t.hitbox.y,
+                        (int) t.width, (int) t.height, null);
+            // t.drawHitbox(g, xLvlOffset);
         }
 
+    }
+
+    private BufferedImage flipImageHorizontally(BufferedImage imgAsal) {
+        int width = imgAsal.getWidth();
+        int height = imgAsal.getHeight();
+
+        BufferedImage flippedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                flippedImage.setRGB(x, y, imgAsal.getRGB(width - 1 - x, y));
+            }
+        }
+        return flippedImage;
     }
 }
