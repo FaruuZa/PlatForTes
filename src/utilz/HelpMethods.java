@@ -10,9 +10,9 @@ public class HelpMethods {
         if (!IsSolid(x, y, levelData)) {
             if (!IsSolid(x + width, y, levelData)) {
                 // if (!IsSolid(x, y + height, levelData)) {
-                    // if (!IsSolid(x + width, y + height, levelData)) {
-                        return true;
-                    // }
+                // if (!IsSolid(x + width, y + height, levelData)) {
+                return true;
+                // }
                 // }
             }
         }
@@ -81,9 +81,13 @@ public class HelpMethods {
     }
 
     public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
-        for (int i = 0; i < xEnd - xStart; i++)
+        for (int i = 0; i < xEnd - xStart; i++){
             if (IsTileSolid(xStart + i, y, lvlData))
                 return false;
+            if(!IsTileSolid(xStart+ i, y+1, lvlData)){
+                return false;
+            }
+        }
         return true;
     }
 

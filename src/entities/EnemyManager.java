@@ -1,6 +1,7 @@
 package entities;
 
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,25 +53,39 @@ public class EnemyManager {
 
     public void update(int[][] lvlData, Player player) {
         for (Tauro t : tauros)
-            t.update(lvlData, player);
+            if (t.isActive())
+                t.update(lvlData, player);
     }
 
     public void render(Graphics g, int xLvlOffset) {
         drawTauros(g, xLvlOffset);
     }
 
+    public void checkEnemyHit(Rectangle2D.Float attackBox) {
+        for (Tauro t : tauros) {
+            if (t.isActive())
+                if (attackBox.intersects(t.getHitbox())) {
+                    t.hurt(15);
+                    return;
+                }
+        }
+    }
+
     private void drawTauros(Graphics g, int xLvlOffset) {
         for (Tauro t : tauros) {
-            if (t.arah == 1)
-                g.drawImage(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()], (int) t.hitbox.x - xLvlOffset,
-                        (int) t.hitbox.y,
-                        (int) t.width, (int) t.height, null);
-            if (t.arah == 0)
-                g.drawImage(flipImageHorizontally(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()]),
-                        (int) t.hitbox.x - xLvlOffset,
-                        (int) t.hitbox.y,
-                        (int) t.width, (int) t.height, null);
-            // t.drawHitbox(g, xLvlOffset);
+            if (t.isActive()) {
+                if (t.arah == 1)
+                    g.drawImage(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()],
+                            (int) t.hitbox.x - xLvlOffset,
+                            (int) t.hitbox.y,
+                            (int) t.width, (int) t.height, null);
+                if (t.arah == 0)
+                    g.drawImage(flipImageHorizontally(animationsMapTauro.get(t.getEnemyState())[t.getAniIndex()]),
+                            (int) t.hitbox.x - xLvlOffset,
+                            (int) t.hitbox.y,
+                            (int) t.width, (int) t.height, null);
+                // t.drawAttackBox(g, xLvlOffset);
+            }
         }
 
     }
@@ -87,5 +102,11 @@ public class EnemyManager {
             }
         }
         return flippedImage;
+    }
+
+    public void resetAll(int[][] lvlData) {
+        for (Tauro tauro : tauros) {
+            tauro.resetAll(lvlData);
+        }
     }
 }

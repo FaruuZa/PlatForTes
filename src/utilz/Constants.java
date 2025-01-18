@@ -120,14 +120,16 @@ public class Constants {
     }
 
     public static class EnemyConstants {
+        public static final int TAURO = 1;
+
         public static class Tauro {
             public static final String IDLE = "idle";
             public static final String WALK = "walk";
             public static final String DEAD = "dead";
             public static final String IDLE2 = "idle2";
             public static final String ATTACK = "attack";
-            public static final int DRAW_OFFSET_X = (int) (26*Game.SCALE);
-            public static final int DRAW_OFFSET_Y = (int) (9*Game.SCALE);
+            public static final int DRAW_OFFSET_X = (int) (26 * Game.SCALE);
+            public static final int DRAW_OFFSET_Y = (int) (9 * Game.SCALE);
 
             public static int GetSpriteFrame(String tauro_action) {
                 return switch (tauro_action) {
@@ -146,11 +148,25 @@ public class Constants {
                 };
             }
 
-            
             public static int[] GetSpriteSize(String tauro_action) {
-                int[] a = {128,128};
+                int[] a = { 128, 128 };
                 return a;
             }
+        }
+
+        public static int GetMaxHP(int enemyType) {
+            return switch (enemyType) {
+                case 1 -> 150; // Tauro
+                case 2 -> 50;
+                default -> 0;
+            };
+        }
+        public static int GetDamage(int enemyType) {
+            return switch (enemyType) {
+                case 1 -> 2; // Tauro
+                case 2 -> 1;
+                default -> 0;
+            };
         }
     }
 }

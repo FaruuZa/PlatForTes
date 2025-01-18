@@ -1,7 +1,10 @@
 package entities;
 
 import static utilz.Constants.EnemyConstants.Tauro.*;
+import static utilz.Constants.EnemyConstants.*;
 import static utilz.HelpMethods.*;
+
+import java.awt.geom.Rectangle2D;
 
 import main.Game;
 
@@ -17,7 +20,10 @@ public abstract class Enemy extends Entity {
     protected int arah = 1;
     protected float walkSpeed = 0.4f * Game.SCALE;
     protected int tileY;
-    protected float attackRange = Game.TILES_SIZE;
+    protected float attackRange = Game.TILES_SIZE / 2;
+    protected int maxHealth;
+    protected int currentHealth;
+    protected boolean active = true, attackChecked = false;
 
     protected int maxFrame; // max frame of animation
 
@@ -25,6 +31,8 @@ public abstract class Enemy extends Entity {
         super(x, y, width, height);
         this.enemytype = enemytype;
         initHitbox(x, y, width, height);
+        maxHealth = GetMaxHP(enemytype);
+        currentHealth = maxHealth;
     }
 
     protected boolean canSeePlayer(int[][] lvlData, Player player) {
@@ -48,7 +56,7 @@ public abstract class Enemy extends Entity {
 
     protected boolean isPlayerInRange(Player player) {
         int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
-        return absValue <= attackRange * 5;
+        return absValue <= attackRange * 10;
     }
 
     protected boolean isPlayerCloseForAttack(Player player) {
@@ -72,7 +80,7 @@ public abstract class Enemy extends Entity {
         } else {
             inAir = false;
             hitbox.y = GetEntityYPos(hitbox, fallSpeed);
-            tileY = (int) (hitbox.y / Game.TILES_SIZE) +1;
+            tileY = (int) (hitbox.y / Game.TILES_SIZE) + 1;
         }
     }
 
@@ -102,9 +110,11 @@ public abstract class Enemy extends Entity {
             aniIndex++;
             if (aniIndex >= maxFrame) {
                 aniIndex = 0;// reset to first frame
-                if (enemyState == ATTACK) 
-                    enemyState = IDLE;
-                
+
+                switch (enemyState) {
+                    case ATTACK -> enemyState = IDLE; // kalo nemu yg hit tambahin
+                    case DEAD -> active = false;
+                }
             }
         }
     }
@@ -131,5 +141,36 @@ public abstract class Enemy extends Entity {
         aniIndex = 0;
         maxFrame = GetSpriteFrame(enemyState);
         aniSpeed = 120 / maxFrame;
+    }
+
+    public void hurt(int amount) {
+        currentHealth -= amount;
+        if (currentHealth <= 0)
+            newState(DEAD);
+
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    protected void checkPlayerHit(Rectangle2D.Float attackBox, Player player) {
+        if (attackBox.intersects(player.hitbox))
+            player.changeHealth(-GetDamage(enemytype));
+        attackChecked = true;// set true to prevent multiple hit detection
+    }
+
+    public void resetAll(int[][] lvlData) {
+        hitbox.x = x;
+        hitbox.y = y;
+        firstUpdate = false;
+        inAir = false;
+        currentHealth = maxHealth;
+        newState(IDLE);
+        active = true;
+        fallSpeed = 0;
+        if (!IsEntityOnFloor(hitbox, lvlData))
+            inAir = true;
+
     }
 }

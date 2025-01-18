@@ -29,6 +29,7 @@ public class LoadSave {
     public static final String PLAYING_BG_ROCKB = "4rockback";
     public static final String PLAYING_BG_ROCKF = "5rockfront";
     public static final String ENEMY_TAURO = "enemies/tauro";
+    public static final String STATUS_BAR = "health_power_bar";
 
     public static BufferedImage getSpriteAtlas(String file, String folder) {
         String path = "/res/" + folder + "/" + file + ".png";

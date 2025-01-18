@@ -73,7 +73,7 @@ public class Ghost extends Entity {
     }
 
     public void updatePos() {
-            x = mKiri ? x - ghostSpeed : x + ghostSpeed;
+        x = mKiri ? x - ghostSpeed : x + ghostSpeed;
 
     }
 
@@ -107,11 +107,13 @@ public class Ghost extends Entity {
     public void render(Graphics g, int xLvlOffset) {
         if (isAlive()) {
             if (mKiri) {
-                g.drawImage(flipImageHorizontally(images[aniIndex]), (int) (x+6*Game.SCALE) - xLvlOffset, (int) (y-6*Game.SCALE),
+                g.drawImage(flipImageHorizontally(images[aniIndex]), (int) (x + 6 * Game.SCALE) - xLvlOffset,
+                        (int) (y - 6 * Game.SCALE),
                         (int) (34 * Game.SCALE),
                         (int) (34 * Game.SCALE), null);
             } else {
-                g.drawImage(images[aniIndex], (int) (x-6*Game.SCALE) - xLvlOffset, (int) (y-6*Game.SCALE), (int) (34 * Game.SCALE),
+                g.drawImage(images[aniIndex], (int) (x - 6 * Game.SCALE) - xLvlOffset, (int) (y - 6 * Game.SCALE),
+                        (int) (34 * Game.SCALE),
                         (int) (34 * Game.SCALE), null);
             }
         }
@@ -170,5 +172,11 @@ public class Ghost extends Entity {
 
     public void setDead(boolean dead) {
         this.dead = dead;
+    }
+
+    public void resetAll() {
+        aksi = "";
+        alive = false;
+        dead = false;
     }
 }
