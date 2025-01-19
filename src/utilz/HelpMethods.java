@@ -64,9 +64,11 @@ public class HelpMethods {
     }
 
     public static boolean IsFloor(Rectangle2D.Float hitbox, float xSpeed, int[][] levelData, int arah) {
-        // if (arah == 0)
-        // return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
-        return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
+        if (xSpeed > 0)
+            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, levelData);
+        else
+            return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
+
     }
 
     public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secHitbox,
@@ -81,10 +83,10 @@ public class HelpMethods {
     }
 
     public static boolean IsAllTileWalkable(int xStart, int xEnd, int y, int[][] lvlData) {
-        for (int i = 0; i < xEnd - xStart; i++){
+        for (int i = 0; i < xEnd - xStart; i++) {
             if (IsTileSolid(xStart + i, y, lvlData))
                 return false;
-            if(!IsTileSolid(xStart+ i, y+1, lvlData)){
+            if (!IsTileSolid(xStart + i, y + 1, lvlData)) {
                 return false;
             }
         }
