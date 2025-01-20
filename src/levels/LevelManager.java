@@ -12,7 +12,8 @@ import utilz.LoadSave;
 
 public class LevelManager {
     private Game game;
-    private LevelOne levelOne = new LevelOne(this);
+    // private LevelOne levelOne = new LevelOne(this);
+    private LevelGenerator levelGenerator;
 
     // New asset map
     private Map<String, List<BufferedImage>> assetMap = new HashMap<>();
@@ -20,12 +21,13 @@ public class LevelManager {
 
     public LevelManager(Game game) {
         this.game = game;
+        this.levelGenerator = new LevelGenerator();
         loadAssets(); // Load assets when the LevelManager is initialized
         loadLevelData();
     }
 
     private void loadLevelData() {
-        levelData = levelOne.getLevelData();
+        levelData = levelGenerator.generateLevel(100, Game.TILES_IN_HEIGHT);
     }
 
     public int[][] getLevelData() {
@@ -96,7 +98,7 @@ public class LevelManager {
         // Update logic here
     }
 
-    public LevelOne getCurrentLevel() {
-        return levelOne;
+    public int[][] getCurrentLevel() {
+        return levelData;
     }
 }

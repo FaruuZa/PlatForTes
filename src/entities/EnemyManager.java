@@ -65,7 +65,7 @@ public class EnemyManager {
         for (Tauro t : tauros) {
             if (t.isActive())
                 if (attackBox.intersects(t.getHitbox())) {
-                    t.hurt(15);
+                    t.hurt(20);
                     return;
                 }
         }

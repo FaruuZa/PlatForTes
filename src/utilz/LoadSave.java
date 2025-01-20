@@ -50,10 +50,24 @@ public class LoadSave {
         for (int y = 0; y < lvlData.length; y++) {
             for (int x = 0; x < lvlData[y].length; x++) {
                 if (lvlData[y][x] == -2)
-                    tauros.add(new Tauro(x * Game.TILES_SIZE, y * Game.TILES_SIZE, (int) (42*Game.SCALE), (int) (50* Game.SCALE)));
+                    tauros.add(new Tauro(x * Game.TILES_SIZE, y * Game.TILES_SIZE, (int) (42 * Game.SCALE),
+                            (int) (50 * Game.SCALE)));
             }
         }
         return tauros;
+    }
+
+    public static int[] getPlayerPos(int[][] lvlData) {
+        int xPos=10, yPos=10;
+        for (int y = 0; y < lvlData.length; y++) {
+            for (int x = 0; x < lvlData[y].length; x++) {
+                if (lvlData[y][x] == -1) {
+                    xPos = x * Game.TILES_SIZE;
+                    yPos = y * Game.TILES_SIZE;
+                }
+            }
+        }
+        return new int[]{yPos, xPos};
     }
 
 }

@@ -55,9 +55,10 @@ public class CompletedOverlay {
         next.setMouseOver(false);
         menu.setMouseOver(false);
 
-        if (isIn(menu, e))
+        if (isIn(menu, e)) {
             menu.setMouseOver(true);
-        else if (isIn(next, e))
+
+        } else if (isIn(next, e))
             next.setMouseOver(true);
     }
 

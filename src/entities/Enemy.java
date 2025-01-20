@@ -93,7 +93,14 @@ public abstract class Enemy extends Entity {
             xSpeed = walkSpeed;
         }
 
-        if (canMove(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height, lvlData)) {
+        // if (canMove(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height,
+        // lvlData)) {
+        // hitbox.x += xSpeed;
+        // return;
+        // }
+        // }
+
+        if (!IsWall(hitbox, xSpeed, lvlData, arah)) {
             if (IsFloor(hitbox, xSpeed, lvlData, arah)) {
                 hitbox.x += xSpeed;
                 return;

@@ -178,5 +178,6 @@ public class Ghost extends Entity {
         aksi = "";
         alive = false;
         dead = false;
+        move = false;
     }
 }

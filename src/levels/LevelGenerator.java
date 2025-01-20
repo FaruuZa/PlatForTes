@@ -17,9 +17,12 @@ public class LevelGenerator {
     private static final int TILE_145 = 145;
     private static final int TILE_146 = 146;
     private static final int TAURO = -2;
+    private static final int PLAYER = -1;
 
     private static final float SPECIAL_TILE_CHANCE = 0.2f;
     private int maxHeight, maxWidth;
+    int enemies = 8;
+    boolean playerDone = false;
 
     public int[][] generateLevel(int width, int height) {
         this.maxHeight = height;
@@ -27,13 +30,28 @@ public class LevelGenerator {
         int[][] level = new int[maxHeight][maxWidth];
         generateGroundAndPlatforms(level);
         addEnemies(level);
+        addPlayer(level);
+        System.out.println(enemies);
         return level;
     }
 
-    private void addEnemies(int[][] level) {
-        int enemies = 10;
+    private void addPlayer(int[][] level) {
         for (int y = maxHeight - 2; y > 1; y--) {
-            for (int x = 6; x < maxWidth - 1; x++) {
+            for (int x = 1; x <= 10; x++) {
+                if (y <= maxHeight - 2) {
+                    if (level[y + 1][x] > EMPTY_TILE && level[y][x] == EMPTY_TILE && !playerDone) {
+                        level[y][x] = PLAYER;
+                        System.out.println("starting point x: " + x + " y: " + y);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private void addEnemies(int[][] level) {
+        for (int y = maxHeight - 2; y > 1; y--) {
+            for (int x = 10; x < maxWidth - 1; x++) {
                 if (y <= maxHeight - 2) {
                     if (level[y + 1][x] > EMPTY_TILE && level[y + 1][x + 1] > EMPTY_TILE
                             && level[y + 1][x - 1] > EMPTY_TILE
@@ -43,9 +61,10 @@ public class LevelGenerator {
                             int enemyType = random.nextFloat() < 0.5f ? TAURO : TAURO; // Randomly choose between TAURO
                                                                                        // and GHOST
                             if (level[y][x + 1] == EMPTY_TILE && level[y][x - 1] == EMPTY_TILE)
-                                level[y - 1][x] = random.nextFloat() < 0.1f ? enemyType : EMPTY_TILE;
-                            if (level[y][x] < EMPTY_TILE)
+                                level[y - 1][x] = random.nextFloat() < 0.4f ? enemyType : EMPTY_TILE;
+                            if (level[y - 1][x] < EMPTY_TILE)
                                 enemies--;
+                            x += 5;
                         }
                     }
                 }

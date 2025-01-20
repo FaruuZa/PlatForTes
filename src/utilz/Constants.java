@@ -156,7 +156,7 @@ public class Constants {
 
         public static int GetMaxHP(int enemyType) {
             return switch (enemyType) {
-                case 1 -> 150; // Tauro
+                case 1 -> 100; // Tauro
                 case 2 -> 50;
                 default -> 0;
             };

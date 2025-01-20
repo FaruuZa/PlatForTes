@@ -35,8 +35,10 @@ public class Playing extends State implements StateMethods {
 
     BufferedImage backgroundImg, backgroundImg2, water, rockb, rockf;
 
-    private boolean gameOver = false, levelCompleted = true;
+    private boolean gameOver = false, levelCompleted = false;
     private GameOverOverlay gameOverOverlay;
+
+    private int[] playerPos;
 
     public Playing(Game game) {
         super(game);
@@ -55,11 +57,13 @@ public class Playing extends State implements StateMethods {
         lvlTilesWide = lmanager.getLevelData()[0].length;
         maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
         maxLevelOffsetX = maxTilesOffset * Game.TILES_SIZE;
-        player = new Player(200, 30, this);
+        playerPos = LoadSave.getPlayerPos(getLvlData());
+        player = new Player(playerPos[1], playerPos[0], this);
         player.loadLvlData(lmanager.getCurrentLevel());
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
         lCompletedOverlay = new CompletedOverlay(this);
+
 
     }
 

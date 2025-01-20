@@ -102,8 +102,8 @@ public class Player extends Entity {
         statusBarImg = LoadSave.getSpriteAtlas(LoadSave.STATUS_BAR, LoadSave.PLAYER);
     }
 
-    public void loadLvlData(LevelOne level) {
-        this.lvlData = level.getLevelData();
+    public void loadLvlData(int[][] level) {
+        this.lvlData = level;
     }
 
     public void render(Graphics g, int xLvlOffset) {

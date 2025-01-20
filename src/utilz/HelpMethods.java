@@ -68,8 +68,16 @@ public class HelpMethods {
             return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height + 1, levelData);
         else
             return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height + 1, levelData);
-
     }
+
+    public static boolean IsWall(Rectangle2D.Float hitbox, float xSpeed, int[][] levelData, int arah) {
+        if (xSpeed > 0)
+            return IsSolid(hitbox.x + hitbox.width + xSpeed, hitbox.y + hitbox.height, levelData);
+        else
+            return IsSolid(hitbox.x + xSpeed, hitbox.y + hitbox.height, levelData);
+    }
+
+
 
     public static boolean IsSightClear(int[][] lvlData, Rectangle2D.Float firstHitbox, Rectangle2D.Float secHitbox,
             int yTile) {
