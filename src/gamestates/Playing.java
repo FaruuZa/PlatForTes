@@ -42,36 +42,37 @@ public class Playing extends State implements StateMethods {
 
     public Playing(Game game) {
         super(game);
+        loadLevel();
         initClasses();
         backgroundImg = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_IMAGE, "level");
         backgroundImg2 = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_IMAGE2, "level");
         water = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_WATER, "level");
         rockb = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_ROCKB, "level");
         rockf = LoadSave.getSpriteAtlas(LoadSave.PLAYING_BG_ROCKF, "level");
+    }
 
+    private void loadLevel() {
+        lmanager = new LevelManager(game);
     }
 
     private void initClasses() {
-        lmanager = new LevelManager(game);
         eManager = new EnemyManager(this);
-        lvlTilesWide = lmanager.getLevelData()[0].length;
+        lvlTilesWide = getLvlData()[0].length;
         maxTilesOffset = lvlTilesWide - Game.TILES_IN_WIDTH;
         maxLevelOffsetX = maxTilesOffset * Game.TILES_SIZE;
         playerPos = LoadSave.getPlayerPos(getLvlData());
         player = new Player(playerPos[1], playerPos[0], this);
-        player.loadLvlData(lmanager.getCurrentLevel());
+        player.loadLvlData(getLvlData());
         pauseOverlay = new PauseOverlay(this);
         gameOverOverlay = new GameOverOverlay(this);
         lCompletedOverlay = new CompletedOverlay(this);
-
-
     }
 
     @Override
     public void update() {
         if (paused) {
             pauseOverlay.update();
-        } else if (gameOver) {
+        } else if (levelCompleted) {
             lCompletedOverlay.update();
         } else {
             lmanager.update();
@@ -227,15 +228,17 @@ public class Playing extends State implements StateMethods {
     }
 
     public int[][] getLvlData() {
-        return lmanager.getLevelData();
+        return lmanager.getCurrentLevel();
     }
 
     public void resetAll() {
         // reset playing, enemy, player
         gameOver = false;
         paused = false;
+        levelCompleted = false;
         player.resetAll();
         eManager.resetAll(getLvlData());
+        initClasses();
     }
 
     public void checkEnemyHit(Rectangle2D.Float attackBox) {
@@ -244,6 +247,15 @@ public class Playing extends State implements StateMethods {
 
     public void setGameOver(boolean b) {
         this.gameOver = b;
+    }
+
+    public void setLevelComplete(boolean b) {
+        this.levelCompleted = b;
+    }
+
+    public void nextLevel() {
+        lmanager.nextLevel();
+        resetAll();
     }
 
 }

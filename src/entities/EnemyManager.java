@@ -16,6 +16,7 @@ public class EnemyManager {
     private Playing playing;
     private Map<String, BufferedImage[]> animationsMapTauro = new HashMap<>();
     private ArrayList<Tauro> tauros = new ArrayList<>();
+    private int enemyCounts;
 
     public EnemyManager(Playing playing) {
         this.playing = playing;
@@ -25,13 +26,23 @@ public class EnemyManager {
 
     private void addEnemies() {
         tauros = LoadSave.getTauro(playing.getLvlData());
-        System.out.println("Tauro Count: " + tauros.size());
+        enemyCounts = tauros.size();
+        System.out.println("Tauro Count: " + enemyCounts);
+    }
+
+    public boolean isEnemyClear() {
+        for (Tauro tauro : tauros) {
+            if (tauro.active) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void loadEnemyImages() {
         for (String action : new String[] { WALK, IDLE, HURT, DEAD, ATTACK }) {
             BufferedImage img = LoadSave.getSpriteAtlas(action, LoadSave.ENEMY_TAURO);
-            System.out.println("Loading animation for action: " + action); // Debug statement
+            // System.out.println("Loading animation for action: " + action); // Debug statement
             if (img == null) {
                 System.err.println("Failed to load animation for action: " + action);
                 continue; // Skip to the next action if loading fails
@@ -52,6 +63,9 @@ public class EnemyManager {
     }
 
     public void update(int[][] lvlData, Player player) {
+        if (isEnemyClear())
+            playing.setLevelComplete(true);
+
         for (Tauro t : tauros)
             if (t.isActive())
                 t.update(lvlData, player);

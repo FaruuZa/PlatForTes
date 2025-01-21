@@ -25,14 +25,14 @@ public class LevelGenerator {
     int enemies = 8;
     boolean playerDone = false;
 
-    public int[][] generateLevel(int width, int height) {
+    public int[][] generateLevel(int width, int height, int maxEnemy) {
         this.maxHeight = height;
         this.maxWidth = width;
+        this.enemies = maxEnemy;
         int[][] level = new int[maxHeight][maxWidth];
         generateGroundAndPlatforms(level);
         addEnemies(level);
         addPlayer(level);
-        System.out.println(enemies);
         return level;
     }
 

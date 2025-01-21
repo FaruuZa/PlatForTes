@@ -7,31 +7,38 @@ import java.util.HashMap; // Import HashMap
 import java.util.List; // Import List
 import java.util.Map; // Import Map
 
+import gamestates.Gamestate;
 import main.Game;
 import utilz.LoadSave;
 
 public class LevelManager {
     private Game game;
-    // private LevelOne levelOne = new LevelOne(this);
-    private LevelGenerator levelGenerator;
 
     // New asset map
     private Map<String, List<BufferedImage>> assetMap = new HashMap<>();
-    private int[][] levelData;
+    private Level[] levels;
+    private int index = 0;
 
     public LevelManager(Game game) {
         this.game = game;
-        this.levelGenerator = new LevelGenerator();
         loadAssets(); // Load assets when the LevelManager is initialized
         loadLevelData();
     }
 
     private void loadLevelData() {
-        levelData = levelGenerator.generateLevel(100, Game.TILES_IN_HEIGHT);
+        levels = new Level[5];
+        for (int i = 0; i < levels.length; i++) {
+            levels[i] = new Level(80 + (i * 5), Game.TILES_IN_HEIGHT, 6 + i);
+        }
     }
 
-    public int[][] getLevelData() {
-        return levelData;
+    public void nextLevel() {
+        index++;
+        if (index >= levels.length-1){
+            Gamestate.state = Gamestate.MENU;
+            index = 0;
+            loadLevelData();
+        }
     }
 
     private void loadAssets() {
@@ -81,9 +88,9 @@ public class LevelManager {
     }
 
     public void render(Graphics g, int xLvlOffset) {
-        for (int row = 0; row < levelData.length; row++) {
-            for (int col = 0; col < levelData[row].length; col++) {
-                int tileIndex = levelData[row][col];
+        for (int row = 0; row < getCurrentLevel().length; row++) {
+            for (int col = 0; col < getCurrentLevel()[row].length; col++) {
+                int tileIndex = getCurrentLevel()[row][col];
                 if (tileIndex > 0) { // If it's not empty
                     BufferedImage tile = getTile(tileIndex); // Assuming a method to get the tile
                     g.drawImage(tile, Game.TILES_SIZE * col - xLvlOffset, row * Game.TILES_SIZE, Game.TILES_SIZE,
@@ -99,6 +106,6 @@ public class LevelManager {
     }
 
     public int[][] getCurrentLevel() {
-        return levelData;
+        return levels[index].getLevelData();
     }
 }

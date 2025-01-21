@@ -14,7 +14,6 @@ import java.util.HashMap; // Import HashMap
 import java.util.Map; // Import Map
 
 import gamestates.Playing;
-import levels.LevelOne;
 import main.Game;
 
 public class Player extends Entity {
@@ -81,7 +80,7 @@ public class Player extends Entity {
     private void loadAllAnimations() {
         for (String action : new String[] { IDLE, RUN, ATTACK, JUMP_START, JUMP_END, DEAD }) {
             BufferedImage img = LoadSave.getSpriteAtlas(action, LoadSave.PLAYER);
-            System.out.println("Loading animation for action: " + action); // Debug statement
+            // System.out.println("Loading animation for action: " + action); // Debug statement
             if (img == null) {
                 System.err.println("Failed to load animation for action: " + action);
                 continue; // Skip to the next action if loading fails

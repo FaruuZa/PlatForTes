@@ -116,7 +116,7 @@ public abstract class Enemy extends Entity {
                 aniIndex = 0;// reset to first frame
 
                 switch (enemyState) {
-                    case ATTACK, HURT -> enemyState = IDLE; // kalo nemu yg hit tambahin
+                    case ATTACK, HURT -> enemyState = IDLE;
                     case DEAD -> active = false;
                 }
             }

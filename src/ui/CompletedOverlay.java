@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
+import gamestates.Gamestate;
 import gamestates.Playing;
 import main.Game;
 import utilz.LoadSave;
@@ -72,10 +73,11 @@ public class CompletedOverlay {
     public void mouseReleased(MouseEvent e) {
         if (isIn(menu, e)) {
             if (menu.isMousePressed())
-                System.out.println("menu pressed");
+                Gamestate.state = Gamestate.MENU;
         } else if (isIn(next, e))
-            if (menu.isMousePressed())
-                System.out.println("next pressed");
+            if (next.isMousePressed()){
+                playing.nextLevel();
+            }
 
         menu.resetBoolean();
         next.resetBoolean();

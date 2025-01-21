@@ -51,7 +51,6 @@ public class UrmButton extends PauseButtons {
     }
 
     public void setMouseOver(boolean mouseOver) {
-        System.out.println(index);
         this.mouseOver = mouseOver;
     }
 
