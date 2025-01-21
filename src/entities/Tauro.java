@@ -5,6 +5,7 @@ import static utilz.Constants.EnemyConstants.Tauro.*;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Rectangle2D;
+import java.util.Random;
 
 import main.Game;
 
@@ -13,6 +14,7 @@ public class Tauro extends Enemy {
     // attackBox
     private Rectangle2D.Float attackBox;
     private int attackBoxOffsetX;
+    private Random random = new Random();
 
     public Tauro(float x, float y, int width, int height) {
         super(x, y, width, height, 1);
@@ -38,9 +40,9 @@ public class Tauro extends Enemy {
 
     private void updateAttackBox() {
         if (arah == 1) {
-            attackBox.x = hitbox.x + hitbox.width/2;
+            attackBox.x = hitbox.x + hitbox.width / 2;
         } else if (arah == 0) {
-            attackBox.x = hitbox.x - hitbox.width/3 ;
+            attackBox.x = hitbox.x - hitbox.width / 3;
         }
 
         attackBox.y = hitbox.y + (Game.SCALE * 2);
@@ -70,7 +72,7 @@ public class Tauro extends Enemy {
                     move(lvlData);
                     break;
                 case ATTACK:
-                    aniSpeed = (120 / GetSpriteFrame(enemyState)) *2;
+                    aniSpeed = (120 / GetSpriteFrame(enemyState)) * 2;
                     if (aniIndex == 0)
                         attackChecked = false;
 
@@ -78,8 +80,6 @@ public class Tauro extends Enemy {
                         checkPlayerHit(attackBox, player);
                     }
                     break;
-                // case HIT:
-                // break;
                 default:
                     break;
             }

@@ -29,7 +29,7 @@ public class EnemyManager {
     }
 
     private void loadEnemyImages() {
-        for (String action : new String[] { WALK, IDLE, IDLE2, DEAD, ATTACK }) {
+        for (String action : new String[] { WALK, IDLE, HURT, DEAD, ATTACK }) {
             BufferedImage img = LoadSave.getSpriteAtlas(action, LoadSave.ENEMY_TAURO);
             System.out.println("Loading animation for action: " + action); // Debug statement
             if (img == null) {

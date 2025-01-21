@@ -17,6 +17,7 @@ public class LevelGenerator {
     private static final int TILE_145 = 145;
     private static final int TILE_146 = 146;
     private static final int TAURO = -2;
+    private static final int SKEL = -3;
     private static final int PLAYER = -1;
 
     private static final float SPECIAL_TILE_CHANCE = 0.2f;

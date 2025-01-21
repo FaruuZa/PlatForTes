@@ -60,7 +60,11 @@ public abstract class Enemy extends Entity {
     }
 
     protected boolean isPlayerCloseForAttack(Player player) {
-        int absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
+        int absValue;
+        if (arah == 1)
+            absValue = (int) Math.abs(player.hitbox.x - hitbox.x - hitbox.width/2);
+        else
+            absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
         return absValue <= attackRange;
     }
 
@@ -93,13 +97,6 @@ public abstract class Enemy extends Entity {
             xSpeed = walkSpeed;
         }
 
-        // if (canMove(hitbox.x + xSpeed, hitbox.y, hitbox.width, hitbox.height,
-        // lvlData)) {
-        // hitbox.x += xSpeed;
-        // return;
-        // }
-        // }
-
         if (!IsWall(hitbox, xSpeed, lvlData, arah)) {
             if (IsFloor(hitbox, xSpeed, lvlData, arah)) {
                 hitbox.x += xSpeed;
@@ -119,7 +116,7 @@ public abstract class Enemy extends Entity {
                 aniIndex = 0;// reset to first frame
 
                 switch (enemyState) {
-                    case ATTACK -> enemyState = IDLE; // kalo nemu yg hit tambahin
+                    case ATTACK, HURT -> enemyState = IDLE; // kalo nemu yg hit tambahin
                     case DEAD -> active = false;
                 }
             }
@@ -147,13 +144,19 @@ public abstract class Enemy extends Entity {
         aniTick = 0;
         aniIndex = 0;
         maxFrame = GetSpriteFrame(enemyState);
-        aniSpeed = 120 / maxFrame;
+        if (maxFrame > 3)
+            aniSpeed = 120 / maxFrame;
+        else
+            aniSpeed = 15;
     }
 
     public void hurt(int amount) {
         currentHealth -= amount;
         if (currentHealth <= 0)
             newState(DEAD);
+        else {
+            newState(HURT);
+        }
 
     }
 

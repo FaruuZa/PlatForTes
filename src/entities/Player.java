@@ -179,10 +179,16 @@ public class Player extends Entity {
             xSpeed += playerSpeed;
             if (!attacking)
                 mkiri = false;
+            else {
+                xSpeed /= 2;
+            }
         } else if (left) {
             xSpeed -= playerSpeed;
             if (!attacking)
                 mkiri = true;
+            else {
+                xSpeed /= 2;
+            }
         }
 
         if (!inAir) {
