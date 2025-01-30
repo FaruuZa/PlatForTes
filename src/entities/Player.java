@@ -80,7 +80,8 @@ public class Player extends Entity {
     private void loadAllAnimations() {
         for (String action : new String[] { IDLE, RUN, ATTACK, JUMP_START, JUMP_END, DEAD }) {
             BufferedImage img = LoadSave.getSpriteAtlas(action, LoadSave.PLAYER);
-            // System.out.println("Loading animation for action: " + action); // Debug statement
+            // System.out.println("Loading animation for action: " + action); // Debug
+            // statement
             if (img == null) {
                 System.err.println("Failed to load animation for action: " + action);
                 continue; // Skip to the next action if loading fails
@@ -137,19 +138,35 @@ public class Player extends Entity {
         g.fillRect(healthBarXStart + statusBarX, healthBarYStart + statusBarY, healthWidth, healthBarHeight);
     }
 
+    private boolean attack2 = false, canAttack2 = false;
+
     private void updateAnimationTick() {
         aniTick++;
         try {
             if (aniTick >= aniSpeed) {
                 aniTick = 0;
                 aniIndex++;
+                if (attacking && attack2 != true) {
+                    // if (aniIndex == 3)
+                    //     canAttack2 = true;
+
+                    if (aniIndex >= 4) {
+                        attacking = false;
+                        attackChecked = false;
+                        if (attack2 != true)
+                            aniIndex = 0;
+                        canAttack2 = false;
+                    }
+                }
                 if (aniIndex >= animations.length) {
-                    if (inAir)
+                    if (inAir && !attacking)
                         aniIndex = animations.length - 1;
                     else
                         aniIndex = 0;
+                    canAttack2 = false;
                     attacking = false;
                     attackChecked = false;
+                    attack2 = false;
                     if (dead) {
                         aniIndex = animations.length - 1;
                         playing.setGameOver(true);
@@ -164,7 +181,7 @@ public class Player extends Entity {
     private void updatePos() {
         moving = false;
 
-        if (jump) {
+        if (jump && !attacking) {
             jump();
         }
 
@@ -179,14 +196,14 @@ public class Player extends Entity {
             if (!attacking)
                 mkiri = false;
             else {
-                xSpeed /= 2;
+                xSpeed *= 0;
             }
         } else if (left) {
             xSpeed -= playerSpeed;
             if (!attacking)
                 mkiri = true;
             else {
-                xSpeed /= 2;
+                xSpeed *= 0;
             }
         }
 
@@ -281,9 +298,13 @@ public class Player extends Entity {
         if (attacking) {
             playerAction = ATTACK;
             if (startAni != ATTACK) {
-                aniIndex = 1;
+                aniIndex = 0;
                 aniTick = 0;
                 return;
+            } else {
+                if (canAttack2 == true) {
+                    attack2 = true;
+                }
             }
         }
 

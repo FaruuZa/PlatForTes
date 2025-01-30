@@ -5,6 +5,7 @@ import static utilz.Constants.EnemyConstants.*;
 import static utilz.HelpMethods.*;
 
 import java.awt.geom.Rectangle2D;
+import java.util.Random;
 
 import main.Game;
 
@@ -62,7 +63,7 @@ public abstract class Enemy extends Entity {
     protected boolean isPlayerCloseForAttack(Player player) {
         int absValue;
         if (arah == 1)
-            absValue = (int) Math.abs(player.hitbox.x - hitbox.x - hitbox.width/2);
+            absValue = (int) Math.abs(player.hitbox.x - hitbox.x - hitbox.width / 2);
         else
             absValue = (int) Math.abs(player.hitbox.x - hitbox.x);
         return absValue <= attackRange;
@@ -116,7 +117,7 @@ public abstract class Enemy extends Entity {
                 aniIndex = 0;// reset to first frame
 
                 switch (enemyState) {
-                    case ATTACK, HURT -> enemyState = IDLE;
+                    case ATTACK, HURT -> newState(IDLE);
                     case DEAD -> active = false;
                 }
             }
@@ -151,11 +152,13 @@ public abstract class Enemy extends Entity {
     }
 
     public void hurt(int amount) {
-        currentHealth -= amount;
-        if (currentHealth <= 0)
-            newState(DEAD);
-        else {
-            newState(HURT);
+        if (enemyState != DEAD) {
+            currentHealth -= amount;
+            if (currentHealth <= 0)
+                newState(DEAD);
+            else {
+                newState(HURT);
+            }
         }
 
     }

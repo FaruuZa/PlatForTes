@@ -41,6 +41,7 @@ public class Constants {
         public static final String JUMP_START = "jump-Start";
         public static final String JUMP_END = "jump-End";
         public static final String ATTACK = "attack";
+        public static final String ATTACK_2 = "attack ";
         public static final String GHOST = "ghost";
         public static final String GHOST_DEAD = "ghost_dead";
 
@@ -49,7 +50,7 @@ public class Constants {
                 case IDLE ->
                     4; // 4
                 case ATTACK ->
-                    8;
+                    8; // 8
                 case RUN ->
                     8; // 8
                 case DEAD ->

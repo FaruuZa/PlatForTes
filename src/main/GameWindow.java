@@ -31,4 +31,8 @@ public class GameWindow {
         });
         jframe.setVisible(true);
     }
+
+    public void setTitle(String title){
+        jframe.setTitle(title);
+    }
 }

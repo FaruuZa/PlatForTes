@@ -52,7 +52,7 @@ public class LevelGenerator {
 
     private void addEnemies(int[][] level) {
         for (int y = maxHeight - 2; y > 1; y--) {
-            for (int x = 10; x < maxWidth - 1; x++) {
+            for (int x = 5; x < maxWidth - 1; x++) {
                 if (y <= maxHeight - 2) {
                     if (level[y + 1][x] > EMPTY_TILE && level[y + 1][x + 1] > EMPTY_TILE
                             && level[y + 1][x - 1] > EMPTY_TILE
